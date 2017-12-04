@@ -149,19 +149,25 @@ var Dungeon = function () {
 
     _classCallCheck(this, Dungeon);
 
-    var roomConfig = config.rooms || {};
-    roomConfig.width = Object.assign({}, defaultConfig.rooms.width, roomConfig.width);
-    roomConfig.height = Object.assign({}, defaultConfig.rooms.height, roomConfig.height);
-    roomConfig.maxArea = roomConfig.maxArea || defaultConfig.rooms.maxArea;
-    roomConfig.maxRooms = roomConfig.maxRooms || defaultConfig.rooms.maxRooms;
+    var rooms = config.rooms || {};
+    rooms.width = Object.assign({}, defaultConfig.rooms.width, rooms.width);
+    rooms.height = Object.assign({}, defaultConfig.rooms.height, rooms.height);
+    rooms.maxArea = rooms.maxArea || defaultConfig.rooms.maxArea;
+    rooms.maxRooms = rooms.maxRooms || defaultConfig.rooms.maxRooms;
+
+    // Validate room size
+    if (rooms.width.min < 3) rooms.width.min = 3;
+    if (rooms.height.min < 3) rooms.height.min = 3;
+    if (rooms.width.max < rooms.width.min) rooms.width.max = rooms.width.min;
+    if (rooms.height.max < rooms.height.min) rooms.height.max = rooms.height.min;
 
     // Avoid an impossibly small maxArea
-    var minArea = roomConfig.width.min * roomConfig.height.min;
-    if (roomConfig.maxArea < minArea) roomConfig.maxArea = minArea;
+    var minArea = rooms.width.min * rooms.height.min;
+    if (rooms.maxArea < minArea) rooms.maxArea = minArea;
 
     this.width = config.width || defaultConfig.width;
     this.height = config.height || defaultConfig.height;
-    this.roomConfig = roomConfig;
+    this.roomConfig = rooms;
     this.rooms = [];
 
     // 2D grid matching map dimensions where every element contains an array of all the rooms in
@@ -421,27 +427,28 @@ var Dungeon = function () {
       var x = 0;
       var y = 0;
 
-      // Randomly position this room on one of the sides of the random room
+      // Randomly position this room on one of the sides of the random room. There must be at least 3
+      // tiles of overlap so a door can be placed in a non-corner tile.
       switch ((0, _utils.randomInteger)(0, 3)) {
         // north
         case 0:
-          x = (0, _utils.randomInteger)(r.x - room.width + 3, r.x + r.width - 2);
-          y = r.y - room.height;
+          x = (0, _utils.randomInteger)(r.left + 2 - (room.width - 1), r.right - 2);
+          y = r.top - room.height;
           break;
         // west
         case 1:
-          x = r.x - room.width;
-          y = (0, _utils.randomInteger)(r.y - room.height + 3, r.y + r.height - 2);
+          x = r.left - room.width;
+          y = (0, _utils.randomInteger)(r.top + 2 - (room.height - 1), r.bottom - 2);
           break;
         // east
         case 2:
-          x = r.x + r.width;
-          y = (0, _utils.randomInteger)(r.y - room.height + 3, r.y + r.height - 2);
+          x = r.right + 1;
+          y = (0, _utils.randomInteger)(r.top + 2 - (room.height - 1), r.bottom - 2);
           break;
         // south
         case 3:
-          x = (0, _utils.randomInteger)(r.x - room.width + 3, r.x + r.width - 2);
-          y = r.y + r.height;
+          x = (0, _utils.randomInteger)(r.left + 2 - (room.width - 1), r.right - 2);
+          y = r.bottom + 1;
           break;
       }
 
