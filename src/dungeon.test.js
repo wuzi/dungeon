@@ -1,4 +1,5 @@
 import Dungeon from "./Dungeon";
+import TILES from "./tiles";
 
 describe("Dungeon constructor", () => {
   test("should use default config, if none specified", () => {
@@ -40,5 +41,23 @@ describe("Dungeon constructor", () => {
       }
     });
     expect(d.roomConfig.maxArea).toBe(100);
+  });
+describe("A dungeon", () => {
+  test("should not have doors in the corners of rooms", () => {
+    const d = new Dungeon({
+      width: 500,
+      height: 500,
+      rooms: {
+        width: { min: 3, max: 11 },
+        height: { min: 3, max: 11 },
+        maxRooms: 1000
+      }
+    });
+    for (const room of d.rooms) {
+      expect(room.tiles[0][0]).not.toBe(TILES.DOOR);
+      expect(room.tiles[room.height - 1][0]).not.toBe(TILES.DOOR);
+      expect(room.tiles[0][room.width - 1]).not.toBe(TILES.DOOR);
+      expect(room.tiles[room.height - 1][room.width - 1]).not.toBe(TILES.DOOR);
+    }
   });
 });

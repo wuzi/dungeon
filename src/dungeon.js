@@ -284,27 +284,28 @@ export default class Dungeon {
     let x = 0;
     let y = 0;
 
-    // Randomly position this room on one of the sides of the random room
+    // Randomly position this room on one of the sides of the random room. There must be at least 3
+    // tiles of overlap so a door can be placed in a non-corner tile.
     switch (randomInteger(0, 3)) {
       // north
       case 0:
-        x = randomInteger(r.x - room.width + 3, r.x + r.width - 2);
-        y = r.y - room.height;
+        x = randomInteger(r.left + 2 - (room.width - 1), r.right - 2);
+        y = r.top - room.height;
         break;
       // west
       case 1:
-        x = r.x - room.width;
-        y = randomInteger(r.y - room.height + 3, r.y + r.height - 2);
+        x = r.left - room.width;
+        y = randomInteger(r.top + 2 - (room.height - 1), r.bottom - 2);
         break;
       // east
       case 2:
-        x = r.x + r.width;
-        y = randomInteger(r.y - room.height + 3, r.y + r.height - 2);
+        x = r.right + 1;
+        y = randomInteger(r.top + 2 - (room.height - 1), r.bottom - 2);
         break;
       // south
       case 3:
-        x = randomInteger(r.x - room.width + 3, r.x + r.width - 2);
-        y = r.y + r.height;
+        x = randomInteger(r.left + 2 - (room.width - 1), r.right - 2);
+        y = r.bottom + 1;
         break;
     }
 
