@@ -10,7 +10,7 @@
 
 <body>
 
-  <script src="../dist/bundle.js"></script>
+  <script src="../dist/dungeon.js"></script>
 
   <script>
     const dungeon = new Dungeon({
@@ -19,13 +19,13 @@
       rooms: {
         width: {
           min: 5,
-          max: 10,
-          onlyOdd: true
+          max: 15,
+          onlyOdd: true // or onlyEven: true
         },
         height: {
-          min: 8,
-          max: 20,
-          onlyOdd: true
+          min: 5,
+          max: 15,
+          onlyOdd: true // or onlyEven: true
         },
         maxArea: 150,
         maxRooms: 50

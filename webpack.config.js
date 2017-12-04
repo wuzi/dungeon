@@ -1,15 +1,18 @@
 const path = require("path");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: {
+    dungeon: "./src/index.js",
+    "dungeon.min": "./src/index.js"
+  },
   output: {
-    filename: "bundle.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
     library: "Dungeon",
     libraryTarget: "umd"
   },
-  devtool: "eval-source-map",
   module: {
     rules: [
       {
@@ -24,5 +27,11 @@ module.exports = {
       }
     ]
   },
-  plugins: [new UglifyJsPlugin()]
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true,
+      sourceMap: "none"
+    })
+  ]
 };

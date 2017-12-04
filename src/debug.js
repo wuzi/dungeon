@@ -18,7 +18,7 @@ export function debugMap(dungeon, config = {}) {
       wall: "#",
       wallColor: "rgb(255, 0, 0)",
       floor: "_",
-      floorColor: "rgb(150, 150, 150)",
+      floorColor: "rgb(210, 210, 210)",
       door: ".",
       doorColor: "rgb(0, 0, 255)",
       fontSize: "15px"
