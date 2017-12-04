@@ -1,0 +1,40 @@
+{
+  "name": "dungeon",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.12.1",
+    "jest": "^21.2.1",
+    "prettier": "^1.8.2",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.9.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "regenerator-runtime": "^0.11.0"
+  },
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack --watch",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikewesthad/dungeon.git"
+  },
+  "prettier": {
+    "printWidth": 100
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikewesthad/dungeon/issues"
+  },
+  "homepage": "https://github.com/mikewesthad/dungeon#readme"
+}
