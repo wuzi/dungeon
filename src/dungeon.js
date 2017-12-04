@@ -3,30 +3,32 @@ import Room from "./Room.js";
 import TILES from "./tiles.js";
 import { debugMap, debugRoomGrid } from "./debug";
 
+const defaultConfig = {
+  width: 50,
+  height: 50,
+  rooms: {
+    width: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
+    height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
+    maxArea: 150,
+    maxRooms: 50
+  }
+};
+
 export default class Dungeon {
   constructor(config = {}) {
-    config = Object.assign(
-      {},
-      {
-        width: 50,
-        height: 50,
-        rooms: {
-          width: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-          height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-          maxArea: 150,
-          maxRooms: 50
-        }
-      },
-      config
-    );
+    const roomConfig = config.rooms || {};
+    roomConfig.width = Object.assign({}, defaultConfig.rooms.width, roomConfig.width);
+    roomConfig.height = Object.assign({}, defaultConfig.rooms.height, roomConfig.height);
+    roomConfig.maxArea = roomConfig.maxArea || defaultConfig.rooms.maxArea;
+    roomConfig.maxRooms = roomConfig.maxRooms || defaultConfig.rooms.maxRooms;
 
-    // Avoid an impossible maxArea
-    const minArea = config.rooms.width.min * config.rooms.height.min;
-    if (config.rooms.maxArea < minArea) config.rooms.maxArea = minArea;
+    // Avoid an impossibly small maxArea
+    const minArea = roomConfig.width.min * roomConfig.height.min;
+    if (roomConfig.maxArea < minArea) roomConfig.maxArea = minArea;
 
-    this.width = config.width;
-    this.height = config.height;
-    this.roomConfig = config.rooms;
+    this.width = config.width || defaultConfig.width;
+    this.height = config.height || defaultConfig.height;
+    this.roomConfig = roomConfig;
     this.rooms = [];
 
     // 2D grid matching map dimensions where every element contains an array of all the rooms in
