@@ -2,6 +2,8 @@
 
 TODO: docs
 
+![](./screenshot.png)
+
 ```js
 const dungeon = new Dungeon({
   width: 50,
