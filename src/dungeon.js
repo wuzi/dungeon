@@ -16,19 +16,25 @@ const defaultConfig = {
 
 export default class Dungeon {
   constructor(config = {}) {
-    const roomConfig = config.rooms || {};
-    roomConfig.width = Object.assign({}, defaultConfig.rooms.width, roomConfig.width);
-    roomConfig.height = Object.assign({}, defaultConfig.rooms.height, roomConfig.height);
-    roomConfig.maxArea = roomConfig.maxArea || defaultConfig.rooms.maxArea;
-    roomConfig.maxRooms = roomConfig.maxRooms || defaultConfig.rooms.maxRooms;
+    const rooms = config.rooms || {};
+    rooms.width = Object.assign({}, defaultConfig.rooms.width, rooms.width);
+    rooms.height = Object.assign({}, defaultConfig.rooms.height, rooms.height);
+    rooms.maxArea = rooms.maxArea || defaultConfig.rooms.maxArea;
+    rooms.maxRooms = rooms.maxRooms || defaultConfig.rooms.maxRooms;
+
+    // Validate room size
+    if (rooms.width.min < 3) rooms.width.min = 3;
+    if (rooms.height.min < 3) rooms.height.min = 3;
+    if (rooms.width.max < rooms.width.min) rooms.width.max = rooms.width.min;
+    if (rooms.height.max < rooms.height.min) rooms.height.max = rooms.height.min;
 
     // Avoid an impossibly small maxArea
-    const minArea = roomConfig.width.min * roomConfig.height.min;
-    if (roomConfig.maxArea < minArea) roomConfig.maxArea = minArea;
+    const minArea = rooms.width.min * rooms.height.min;
+    if (rooms.maxArea < minArea) rooms.maxArea = minArea;
 
     this.width = config.width || defaultConfig.width;
     this.height = config.height || defaultConfig.height;
-    this.roomConfig = roomConfig;
+    this.roomConfig = rooms;
     this.rooms = [];
 
     // 2D grid matching map dimensions where every element contains an array of all the rooms in

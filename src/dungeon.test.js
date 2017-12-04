@@ -23,7 +23,7 @@ describe("Dungeon constructor", () => {
       }
     });
     expect(d.roomConfig).toMatchObject({
-      width: { min: 2, max: 15, onlyOdd: true, onlyEven: false },
+      width: { min: 3, max: 15, onlyOdd: true, onlyEven: false },
       height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
       maxArea: 200,
       maxRooms: 50
@@ -42,6 +42,30 @@ describe("Dungeon constructor", () => {
     });
     expect(d.roomConfig.maxArea).toBe(100);
   });
+
+  test("should not allow rooms smaller than 3 x 3", () => {
+    const d = new Dungeon({
+      rooms: {
+        width: { min: 0, max: 20 },
+        height: { min: -2, max: 20 }
+      }
+    });
+    expect(d.roomConfig.width.min).toBe(3);
+    expect(d.roomConfig.height.min).toBe(3);
+  });
+
+  test("should not allow room size min less than max", () => {
+    const d = new Dungeon({
+      rooms: {
+        width: { min: 5, max: 4 },
+        height: { min: 2, max: 1 }
+      }
+    });
+    expect(d.roomConfig.width.max).toBe(5);
+    expect(d.roomConfig.height.max).toBe(3);
+  });
+});
+
 describe("A dungeon", () => {
   test("should not have doors in the corners of rooms", () => {
     const d = new Dungeon({
