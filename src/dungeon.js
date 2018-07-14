@@ -1,4 +1,4 @@
-import { randomInteger, randomPick } from "./utils.js";
+import Random from "./random.js";
 import Room from "./Room.js";
 import TILES from "./tiles.js";
 import { debugMap, debugHtmlMap } from "./debug.js";
@@ -6,6 +6,8 @@ import { debugMap, debugHtmlMap } from "./debug.js";
 const defaultConfig = {
   width: 50,
   height: 50,
+  randomSeed: undefined,
+  doorPadding: 1, // Experimental, minimum number of tiles between a door and a room corner (>= 1)
   rooms: {
     width: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
     height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
@@ -32,10 +34,12 @@ export default class Dungeon {
     const minArea = rooms.width.min * rooms.height.min;
     if (rooms.maxArea < minArea) rooms.maxArea = minArea;
 
+    this.doorPadding = config.doorPadding || defaultConfig.doorPadding;
     this.width = config.width || defaultConfig.width;
     this.height = config.height || defaultConfig.height;
     this.roomConfig = rooms;
     this.rooms = [];
+    this.r = new Random(config.randomSeed);
 
     // 2D grid matching map dimensions where every element contains an array of all the rooms in
     // that location
@@ -152,11 +156,11 @@ export default class Dungeon {
     // Find width and height using min/max sizes while keeping under the maximum area
     const config = this.roomConfig;
     do {
-      width = randomInteger(config.width.min, config.width.max, {
+      width = this.r.randomInteger(config.width.min, config.width.max, {
         onlyEven: config.width.onlyEven,
         onlyOdd: config.width.onlyOdd
       });
-      height = randomInteger(config.height.min, config.height.max, {
+      height = this.r.randomInteger(config.height.min, config.height.max, {
         onlyEven: config.height.onlyEven,
         onlyOdd: config.height.onlyOdd
       });
@@ -253,9 +257,9 @@ export default class Dungeon {
 
     if (room1.y === room2.y - room1.height) {
       // North
-      door1.x = door2.x = randomInteger(
-        Math.floor(Math.max(room2.left, room1.left) + 1),
-        Math.floor(Math.min(room2.right, room1.right) - 1)
+      door1.x = door2.x = this.r.randomInteger(
+        Math.floor(Math.max(room2.left, room1.left) + this.doorPadding),
+        Math.floor(Math.min(room2.right, room1.right) - this.doorPadding)
       );
       door1.y = room1.y + room1.height - 1;
       door2.y = room2.y;
@@ -263,23 +267,23 @@ export default class Dungeon {
       // West
       door1.x = room1.x + room1.width - 1;
       door2.x = room2.x;
-      door1.y = door2.y = randomInteger(
-        Math.floor(Math.max(room2.top, room1.top) + 1),
-        Math.floor(Math.min(room2.bottom, room1.bottom) - 1)
+      door1.y = door2.y = this.r.randomInteger(
+        Math.floor(Math.max(room2.top, room1.top) + this.doorPadding),
+        Math.floor(Math.min(room2.bottom, room1.bottom) - this.doorPadding)
       );
     } else if (room1.x == room2.x + room2.width) {
       // East
       door1.x = room1.x;
       door2.x = room2.x + room2.width - 1;
-      door1.y = door2.y = randomInteger(
-        Math.floor(Math.max(room2.top, room1.top) + 1),
-        Math.floor(Math.min(room2.bottom, room1.bottom) - 1)
+      door1.y = door2.y = this.r.randomInteger(
+        Math.floor(Math.max(room2.top, room1.top) + this.doorPadding),
+        Math.floor(Math.min(room2.bottom, room1.bottom) - this.doorPadding)
       );
     } else if (room1.y == room2.y + room2.height) {
       // South
-      door1.x = door2.x = randomInteger(
-        Math.floor(Math.max(room2.left, room1.left) + 1),
-        Math.floor(Math.min(room2.right, room1.right) - 1)
+      door1.x = door2.x = this.r.randomInteger(
+        Math.floor(Math.max(room2.left, room1.left) + this.doorPadding),
+        Math.floor(Math.min(room2.right, room1.right) - this.doorPadding)
       );
       door1.y = room1.y;
       door2.y = room2.y + room2.height - 1;
@@ -289,32 +293,33 @@ export default class Dungeon {
   }
 
   findRoomAttachment(room) {
-    const r = randomPick(this.rooms);
+    const r = this.r.randomPick(this.rooms);
 
     let x = 0;
     let y = 0;
+    let pad = 2 * this.doorPadding; // 2x padding to account for the padding both rooms need
 
-    // Randomly position this room on one of the sides of the random room. There must be at least 3
-    // tiles of overlap so a door can be placed in a non-corner tile.
-    switch (randomInteger(0, 3)) {
+    // Randomly position this room on one of the sides of the random room.
+    switch (this.r.randomInteger(0, 3)) {
       // north
       case 0:
-        x = randomInteger(r.left + 2 - (room.width - 1), r.right - 2);
+        // x = r.left - (room.width - 1) would have rooms sharing exactly 1x tile
+        x = this.r.randomInteger(r.left - (room.width - 1) + pad, r.right - pad);
         y = r.top - room.height;
         break;
       // west
       case 1:
         x = r.left - room.width;
-        y = randomInteger(r.top + 2 - (room.height - 1), r.bottom - 2);
+        y = this.r.randomInteger(r.top - (room.height - 1) + pad, r.bottom - pad);
         break;
       // east
       case 2:
         x = r.right + 1;
-        y = randomInteger(r.top + 2 - (room.height - 1), r.bottom - 2);
+        y = this.r.randomInteger(r.top - (room.height - 1) + pad, r.bottom - pad);
         break;
       // south
       case 3:
-        x = randomInteger(r.left + 2 - (room.width - 1), r.right - 2);
+        x = this.r.randomInteger(r.left - (room.width - 1) + pad, r.right - pad);
         y = r.bottom + 1;
         break;
     }
