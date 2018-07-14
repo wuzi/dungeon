@@ -1,7 +1,5 @@
 # Dungeon
 
-TODO: docs
-
 ![](./screenshot.png)
 
 ## Installation
@@ -87,3 +85,7 @@ var mappedTiles = dungeon.getMappedTiles({
   wall: 3
 });
 ```
+
+## To Do
+
+- Actual docs :p
