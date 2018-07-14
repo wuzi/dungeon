@@ -7,6 +7,43 @@ export function debugRoomGrid(dungeon) {
   console.log(table.map(row => row.join(" ")).join("\n"));
 }
 
+// Debug by dumping the dungeon into an HTML string that can be inserted into HTML. The structure
+// is:
+//  <pre>
+//    <span>#</span> <span>.</span> <span>#</span> <span>#</span>
+//    <span>#</span> <span> </span> <span> </span> <span>#</span>
+//    <span>#</span> <span> </span> <span> </span> <span>.</span>
+//    <span>#</span> <span> </span> <span> </span> <span>#</span>
+//    <span>#</span> <span>#</span> <span>#</span> <span>#</span>
+//  </pre>
+export function debugHtmlMap(dungeon, config = {}) {
+  config = Object.assign(
+    {},
+    {
+      empty: " ",
+      emptyColor: "rgb(0, 0, 0)",
+      wall: "#",
+      wallColor: "rgb(255, 0, 0)",
+      floor: "_",
+      floorColor: "rgb(210, 210, 210)",
+      door: ".",
+      doorColor: "rgb(0, 0, 255)",
+      fontSize: "15px"
+    },
+    config
+  );
+
+  const tiles = dungeon.getMappedTiles({
+    empty: `<span style="color: ${config.emptyColor}">${config.empty}</span>`,
+    floor: `<span style="color: ${config.floorColor}">${config.floor}</span>`,
+    door: `<span style="color: ${config.doorColor}">${config.door}</span>`,
+    wall: `<span style="color: ${config.wallColor}">${config.wall}</span>`
+  });
+  const pre = document.createElement("pre");
+  pre.innerHTML = tiles.map(row => row.join(" ")).join("\n");
+  return pre;
+}
+
 // Debug by returning a colored(!) table string where each tile in the map is represented with an
 // ASCII string
 export function debugMap(dungeon, config = {}) {

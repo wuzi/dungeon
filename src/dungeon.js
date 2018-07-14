@@ -49,6 +49,10 @@ export default class Dungeon {
     debugMap(this, config);
   }
 
+  drawToHtml(config) {
+    return debugHtmlMap(this, config);
+  }
+
   generate() {
     this.rooms = [];
     this.roomGrid = [];
