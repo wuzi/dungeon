@@ -1,1 +1,3 @@
-module.exports = require("./Dungeon.js").default;
+import Dungeon from "./dungeon";
+
+export default Dungeon;
