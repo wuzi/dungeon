@@ -1,7 +1,7 @@
 import { randomInteger, randomPick } from "./utils.js";
 import Room from "./Room.js";
 import TILES from "./tiles.js";
-import { debugMap, debugRoomGrid } from "./debug";
+import { debugMap, debugHtmlMap } from "./debug.js";
 
 const defaultConfig = {
   width: 50,
