@@ -4,6 +4,30 @@ TODO: docs
 
 ![](./screenshot.png)
 
+## Installation
+
+### As a Script
+
+Grab the [minified js](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.min.js) file & optional source [map](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.min.js.map) (or the [unminified js](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.js) file & optional source [map](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.js.map)).
+
+```html
+<script src="dungeon.min.js"></script>
+```
+
+This will give you a `Dungeon` global variable.
+
+### As a Module
+
+```
+npm i @mikewesthad/dungeon
+```
+
+```js
+import Dungeon from "@mikewesthad/dungeon";
+```
+
+## Usage
+
 ```js
 const dungeon = new Dungeon({
   width: 50,
