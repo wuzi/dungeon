@@ -80,22 +80,22 @@ export default class Dungeon {
       i -= 1;
     }
 
-    // Now we want to randomly add doors between some of the rooms and other rooms they touch
-    for (let i = 0; i < this.rooms.length; i++) {
-      // Find all rooms that we could connect with this one
-      const targets = this.getPotentiallyTouchingRooms(this.rooms[i]);
-      for (let j = 0; j < targets.length; j++) {
-        // Make sure the rooms aren't already connected with a door
-        if (!this.rooms[i].isConnectedTo(targets[j])) {
-          // 20% chance we add a door connecting the rooms
-          if (Math.random() < 0.2) {
-            const [door1, door2] = this.findNewDoorLocation(this.rooms[i], targets[j]);
-            this.addDoor(door1);
-            this.addDoor(door2);
-          }
-        }
-      }
-    }
+    // // Now we want to randomly add doors between some of the rooms and other rooms they touch
+    // for (let i = 0; i < this.rooms.length; i++) {
+    //   // Find all rooms that we could connect with this one
+    //   const targets = this.getPotentiallyTouchingRooms(this.rooms[i]);
+    //   for (let j = 0; j < targets.length; j++) {
+    //     // Make sure the rooms aren't already connected with a door
+    //     if (!this.rooms[i].isConnectedTo(targets[j])) {
+    //       // 20% chance we add a door connecting the rooms
+    //       if (Math.random() < 0.2) {
+    //         const [door1, door2] = this.findNewDoorLocation(this.rooms[i], targets[j]);
+    //         this.addDoor(door1);
+    //         this.addDoor(door2);
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   getRoomAt(x, y) {
