@@ -65,6 +65,13 @@ export function debugMap(dungeon, config = {}) {
 
   let string = "";
   let styles = [];
+
+  // First line in the browser console window has console line mapping (e.g. "dungeon.js:724") which
+  // throws off the table. Kill two birds by displaying a guide on the first two lines.
+  string += `Dungeon: the console window should be big enough to see all of the guide on the next line:\n`;
+  string += `%c|${"=".repeat(dungeon.width * 2 - 2)}|\n\n`;
+  styles.push(`font-size: ${config.fontSize}`);
+
   for (let y = 0; y < dungeon.height; y += 1) {
     for (let x = 0; x < dungeon.width; x += 1) {
       const tile = dungeon.tiles[y][x];
