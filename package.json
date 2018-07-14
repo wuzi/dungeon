@@ -22,6 +22,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack --mode development --watch",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "repository": {
