@@ -1,27 +1,27 @@
 {
-  "name": "dungeon",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@mikewesthad/dungeon",
+  "version": "1.1.0",
+  "description": "A simple 2D dungeon generator",
   "dependencies": {
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.1",
-    "eslint": "^4.12.1",
-    "jest": "^21.2.1",
-    "prettier": "^1.8.2",
-    "seedrandom": "^2.4.3",
-    "uglifyjs-webpack-plugin": "^1.1.2",
-    "webpack": "^3.9.1"
+    "seedrandom": "^2.4.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-jest": "^21.2.0",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.1.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.3.1",
-    "regenerator-runtime": "^0.11.0"
+    "jest": "^23.4.1",
+    "prettier": "^1.13.7",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack": "^4.16.0",
+    "webpack-cli": "^3.0.8"
   },
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack --watch",
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch",
     "test": "jest"
   },
   "repository": {
@@ -31,11 +31,19 @@
   "prettier": {
     "printWidth": 100
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mikewesthad/dungeon/issues"
   },
-  "homepage": "https://github.com/mikewesthad/dungeon#readme"
+  "homepage": "https://github.com/mikewesthad/dungeon#readme",
+  "keywords": [
+    "dungeon generator",
+    "2D"
+  ],
+  "main": "dist/dungeon.min.js",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ]
 }
