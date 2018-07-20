@@ -208,11 +208,15 @@ function debugRoomGrid(dungeon) {
 // Debug by dumping the dungeon into an HTML fragment that can be inserted into HTML. The structure
 // is:
 //  <pre>
-//    <span>#</span> <span>.</span> <span>#</span> <span>#</span>
-//    <span>#</span> <span> </span> <span> </span> <span>#</span>
-//    <span>#</span> <span> </span> <span> </span> <span>.</span>
-//    <span>#</span> <span> </span> <span> </span> <span>#</span>
-//    <span>#</span> <span>#</span> <span>#</span> <span>#</span>
+//    <table>
+//      <tbody>
+//        <tr>   <td>#</td> <td>#</td> <td>#</td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>/</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td>#</td> <td>#</td> <td>#</td>   </tr>
+//      </tbody>
+//    </table>
 //  </pre>
 function debugHtmlMap(dungeon) {
   var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -229,19 +233,18 @@ function debugHtmlMap(dungeon) {
     containerAttributes: { class: "dungeon" }
   }, config);
 
-  var tileNode = "span";
   var c = config;
   var tiles = dungeon.getMappedTiles({
-    empty: "<" + tileNode + " " + attributesToHtmlString(c.emptyAttributes) + ">" + c.empty + "</" + tileNode + ">",
-    floor: "<" + tileNode + " " + attributesToHtmlString(c.floorAttributes) + ">" + c.floor + "</" + tileNode + ">",
-    door: "<" + tileNode + " " + attributesToHtmlString(c.doorAttributes) + ">" + c.door + "</" + tileNode + ">",
-    wall: "<" + tileNode + " " + attributesToHtmlString(c.wallAttributes) + ">" + c.wall + "</" + tileNode + ">"
+    empty: "<td " + attributesToHtmlString(c.emptyAttributes) + ">" + c.empty + "</td>",
+    floor: "<td " + attributesToHtmlString(c.floorAttributes) + ">" + c.floor + "</td>",
+    door: "<td " + attributesToHtmlString(c.doorAttributes) + ">" + c.door + "</td>",
+    wall: "<td " + attributesToHtmlString(c.wallAttributes) + ">" + c.wall + "</td>"
   });
 
   var tilesHtml = tiles.map(function (row) {
-    return row.join(" ");
-  }).join("\n");
-  var htmlString = "<pre " + attributesToHtmlString(c.containerAttributes) + ">" + tilesHtml + "</pre>";
+    return "<tr>" + row.join("") + "</tr>";
+  }).join("");
+  var htmlString = "<pre " + attributesToHtmlString(c.containerAttributes) + "><table><tbody>" + tilesHtml + "</tbody></table></pre>";
   var htmlFragment = document.createRange().createContextualFragment(htmlString);
 
   return htmlFragment;
