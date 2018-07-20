@@ -48,27 +48,30 @@ const dungeon = new Dungeon({
   }
 });
 
+// Make sure you resize your console (see guide that gets printed out in the console)
 dungeon.drawToConsole({
   empty: " ",
-  emptyColor: "rgb(0, 0, 0)",
+  emptyAttributes: "rgb(0, 0, 0)",
   wall: "#",
-  wallColor: "rgb(255, 0, 0)",
+  wallAttributes: "rgb(255, 0, 0)",
   floor: "0",
-  floorColor: "rgb(210, 210, 210)",
+  floorAttributes: "rgb(210, 210, 210)",
   door: "x",
-  doorColor: "rgb(0, 0, 255)",
-  fontSize: "15px"
+  doorAttributes: "rgb(0, 0, 255)",
+  containerAttributes: "15px"
 });
 
+// Helper method for debugging by dumping the map into an HTML fragment
 const html = dungeon.drawToHtml({
   empty: " ",
-  emptyColor: "rgb(0, 0, 0)",
+  emptyAttributes: { class: "dungeon__empty", style: "color: rgb(0, 0, 0)" },
   wall: "#",
-  wallColor: "rgb(255, 0, 0)",
+  wallAttributes: { class: "dungeon__wall", style: "color: rgb(255, 0, 0)" },
   floor: "0",
-  floorColor: "rgb(210, 210, 210)",
+  floorAttributes: { class: "dungeon__floor", style: "color: rgb(210, 210, 210)" },
   door: "x",
-  doorColor: "rgb(0, 0, 255)"
+  doorAttributes: { class: "dungeon__door", style: "color: rgb(0, 0, 255)" },
+  containerAttributes: { class: "dungeon", style: "font-size: 15px" }
 });
 document.body.appendChild(html);
 

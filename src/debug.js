@@ -1,5 +1,10 @@
 import TILES from "./tiles";
 
+const attributesToHtmlString = attrObj =>
+  Object.entries(attrObj)
+    .map(([key, val]) => `${key}="${val}"`)
+    .join(" ");
+
 // Debug by dumping a table to the console where each element in the map is the number of rooms in
 // that location
 export function debugRoomGrid(dungeon) {
@@ -7,7 +12,7 @@ export function debugRoomGrid(dungeon) {
   console.log(table.map(row => row.join(" ")).join("\n"));
 }
 
-// Debug by dumping the dungeon into an HTML string that can be inserted into HTML. The structure
+// Debug by dumping the dungeon into an HTML fragment that can be inserted into HTML. The structure
 // is:
 //  <pre>
 //    <span>#</span> <span>.</span> <span>#</span> <span>#</span>
@@ -21,27 +26,32 @@ export function debugHtmlMap(dungeon, config = {}) {
     {},
     {
       empty: " ",
-      emptyColor: "rgb(0, 0, 0)",
+      emptyAttributes: { class: "dungeon__empty" },
       wall: "#",
-      wallColor: "rgb(255, 0, 0)",
+      wallAttributes: { class: "dungeon__wall" },
       floor: "_",
-      floorColor: "rgb(210, 210, 210)",
+      floorAttributes: { class: "dungeon__wall" },
       door: ".",
-      doorColor: "rgb(0, 0, 255)",
-      fontSize: "15px"
+      doorAttributes: { class: "dungeon__door" },
+      containerAttributes: { class: "dungeon" }
     },
     config
   );
 
+  const tileNode = "span";
+  let c = config;
   const tiles = dungeon.getMappedTiles({
-    empty: `<span style="color: ${config.emptyColor}">${config.empty}</span>`,
-    floor: `<span style="color: ${config.floorColor}">${config.floor}</span>`,
-    door: `<span style="color: ${config.doorColor}">${config.door}</span>`,
-    wall: `<span style="color: ${config.wallColor}">${config.wall}</span>`
+    empty: `<${tileNode} ${attributesToHtmlString(c.emptyAttributes)}>${c.empty}</${tileNode}>`,
+    floor: `<${tileNode} ${attributesToHtmlString(c.floorAttributes)}>${c.floor}</${tileNode}>`,
+    door: `<${tileNode} ${attributesToHtmlString(c.doorAttributes)}>${c.door}</${tileNode}>`,
+    wall: `<${tileNode} ${attributesToHtmlString(c.wallAttributes)}>${c.wall}</${tileNode}>`
   });
-  const pre = document.createElement("pre");
-  pre.innerHTML = tiles.map(row => row.join(" ")).join("\n");
-  return pre;
+
+  const tilesHtml = tiles.map(row => row.join(" ")).join("\n");
+  const htmlString = `<pre ${attributesToHtmlString(c.containerAttributes)}>${tilesHtml}</pre>`;
+  const htmlFragment = document.createRange().createContextualFragment(htmlString);
+
+  return htmlFragment;
 }
 
 // Debug by returning a colored(!) table string where each tile in the map is represented with an
