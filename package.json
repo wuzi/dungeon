@@ -1,6 +1,6 @@
 {
   "name": "@mikewesthad/dungeon",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A simple 2D dungeon generator",
   "dependencies": {
     "seedrandom": "^2.4.3"
