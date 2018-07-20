@@ -15,11 +15,15 @@ export function debugRoomGrid(dungeon) {
 // Debug by dumping the dungeon into an HTML fragment that can be inserted into HTML. The structure
 // is:
 //  <pre>
-//    <span>#</span> <span>.</span> <span>#</span> <span>#</span>
-//    <span>#</span> <span> </span> <span> </span> <span>#</span>
-//    <span>#</span> <span> </span> <span> </span> <span>.</span>
-//    <span>#</span> <span> </span> <span> </span> <span>#</span>
-//    <span>#</span> <span>#</span> <span>#</span> <span>#</span>
+//    <table>
+//      <tbody>
+//        <tr>   <td>#</td> <td>#</td> <td>#</td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>/</td>   </tr>
+//        <tr>   <td>#</td> <td> </td> <td> </td> <td>#</td>   </tr>
+//        <tr>   <td>#</td> <td>#</td> <td>#</td> <td>#</td>   </tr>
+//      </tbody>
+//    </table>
 //  </pre>
 export function debugHtmlMap(dungeon, config = {}) {
   config = Object.assign(
@@ -38,17 +42,18 @@ export function debugHtmlMap(dungeon, config = {}) {
     config
   );
 
-  const tileNode = "span";
   let c = config;
   const tiles = dungeon.getMappedTiles({
-    empty: `<${tileNode} ${attributesToHtmlString(c.emptyAttributes)}>${c.empty}</${tileNode}>`,
-    floor: `<${tileNode} ${attributesToHtmlString(c.floorAttributes)}>${c.floor}</${tileNode}>`,
-    door: `<${tileNode} ${attributesToHtmlString(c.doorAttributes)}>${c.door}</${tileNode}>`,
-    wall: `<${tileNode} ${attributesToHtmlString(c.wallAttributes)}>${c.wall}</${tileNode}>`
+    empty: `<td ${attributesToHtmlString(c.emptyAttributes)}>${c.empty}</td>`,
+    floor: `<td ${attributesToHtmlString(c.floorAttributes)}>${c.floor}</td>`,
+    door: `<td ${attributesToHtmlString(c.doorAttributes)}>${c.door}</td>`,
+    wall: `<td ${attributesToHtmlString(c.wallAttributes)}>${c.wall}</td>`
   });
 
-  const tilesHtml = tiles.map(row => row.join(" ")).join("\n");
-  const htmlString = `<pre ${attributesToHtmlString(c.containerAttributes)}>${tilesHtml}</pre>`;
+  const tilesHtml = tiles.map(row => `<tr>${row.join("")}</tr>`).join("");
+  const htmlString = `<pre ${attributesToHtmlString(
+    c.containerAttributes
+  )}><table><tbody>${tilesHtml}</tbody></table></pre>`;
   const htmlFragment = document.createRange().createContextualFragment(htmlString);
 
   return htmlFragment;

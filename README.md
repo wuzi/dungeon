@@ -61,7 +61,7 @@ dungeon.drawToConsole({
   containerAttributes: "15px"
 });
 
-// Helper method for debugging by dumping the map into an HTML fragment
+// Helper method for debugging by dumping the map into an HTML fragment (<pre><table>)
 const html = dungeon.drawToHtml({
   empty: " ",
   emptyAttributes: { class: "dungeon__empty", style: "color: rgb(0, 0, 0)" },

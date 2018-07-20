@@ -32,16 +32,16 @@ dungeon.drawToConsole({
   containerAttributes: "15px"
 });
 
-// Helper method for debugging by dumping the map into an HTML fragment
+// Helper method for debugging by dumping the map into an HTML fragment (<pre><table>)
 const html = dungeon.drawToHtml({
   empty: " ",
-  emptyAttributes: { class: "dungeon__empty", style: "color: rgb(0, 0, 0)" },
+  emptyAttributes: { class: "dungeon__empty" },
   wall: "#",
-  wallAttributes: { class: "dungeon__wall", style: "color: rgb(255, 0, 0)" },
-  floor: "0",
-  floorAttributes: { class: "dungeon__floor", style: "color: rgb(210, 210, 210)" },
-  door: "x",
-  doorAttributes: { class: "dungeon__door", style: "color: rgb(0, 0, 255)" },
+  wallAttributes: { class: "dungeon__wall", style: "color: #950fe2" },
+  floor: "x",
+  floorAttributes: { class: "dungeon__floor", style: "color: #d2e9ef" },
+  door: "*",
+  doorAttributes: { class: "dungeon__door", style: "font-weight: bold; color: #f900c3" },
   containerAttributes: { class: "dungeon", style: "font-size: 15px" }
 });
 document.body.appendChild(html);
