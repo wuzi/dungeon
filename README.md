@@ -12,6 +12,12 @@ Grab the [minified js](https://raw.githubusercontent.com/mikewesthad/dungeon/mas
 <script src="dungeon.min.js"></script>
 ```
 
+Or use the jsdelivr CDN:
+
+```html
+<script src="//cdn.jsdelivr.net/npm/@mikewesthad/dungeon@1.2.1"></script>
+```
+
 This will give you a `Dungeon` global variable.
 
 ### As a Module
