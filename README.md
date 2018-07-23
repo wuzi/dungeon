@@ -1,6 +1,8 @@
 # Dungeon
 
-![](./screenshot.png)
+![](./emoji-dungeon-optimized.gif)
+
+![](./ascii-screenshot.png)
 
 ## Installation
 

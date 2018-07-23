@@ -1,6 +1,6 @@
 const dungeon = new Dungeon({
-  width: 50,
-  height: 50,
+  width: 100,
+  height: 30,
   doorPadding: 1, // Experimental, minimum number of tiles between a door and a room corner (>= 1)
   randomSeed: 0, // Leave undefined if you don't want to control the seed
   rooms: {
