@@ -18,7 +18,8 @@ module.exports = function(env, argv) {
       path: path.join(root, "dist"),
       library: "Dungeon",
       libraryTarget: "umd",
-      libraryExport: "default"
+      libraryExport: "default",
+      globalObject: `typeof self !== 'undefined' ? self : this`
     },
     optimization: {
       minimizer: [new UglifyJsPlugin({ include: /\.min\.js$/, sourceMap: true })]

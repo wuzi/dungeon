@@ -7,7 +7,7 @@
 		exports["Dungeon"] = factory();
 	else
 		root["Dungeon"] = factory();
-})(window, function() {
+})(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
