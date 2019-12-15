@@ -1,5 +1,5 @@
 import Random from "./random.js";
-import Room from "./Room.js";
+import Room from "./room.js";
 import TILES from "./tiles.js";
 import { debugMap, debugHtmlMap } from "./debug.js";
 
