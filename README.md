@@ -99,7 +99,8 @@ var mappedTiles = dungeon.getMappedTiles({
 
 ## Contributors
 
-- [@gobah](https://github.com/gobah) - PR for getting the library working on node
+- [@mktcode](https://github.com/mktcode) - fix filename case. 
+- [@gobah](https://github.com/gobah) - PR for getting the library working on node.
 - And, of course, [@nickgravelyn](https://github.com/nickgravelyn/dungeon) who wrote the library that this fork is based on.
 
 ## To Do
