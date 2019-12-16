@@ -1,4 +1,4 @@
-import Dungeon from "./Dungeon";
+import Dungeon from "./dungeon";
 import TILES from "./tiles";
 
 describe("Dungeon constructor", () => {
