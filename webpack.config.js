@@ -10,8 +10,8 @@ module.exports = function(env, argv) {
   return {
     context: path.join(root, "src"),
     entry: {
-      dungeon: "./index.js",
-      "dungeon.min": "./index.js"
+      dungeon: "./index.ts",
+      "dungeon.min": "./index.ts"
     },
     output: {
       filename: "[name].js",
@@ -26,6 +26,11 @@ module.exports = function(env, argv) {
     },
     module: {
       rules: [
+        {
+          test: /\.ts$/,
+          use: "ts-loader",
+          exclude: /node_modules/
+        },
         {
           test: /\.js$/,
           exclude: /node_modules/,
