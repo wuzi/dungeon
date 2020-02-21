@@ -43,6 +43,9 @@ module.exports = function(env, argv) {
         }
       ]
     },
+    resolve: {
+      extensions: [".ts", ".js"]
+    },
     devtool: isDev ? "eval-source-map" : "source-map"
   };
 };
