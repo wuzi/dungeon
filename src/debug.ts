@@ -1,13 +1,18 @@
 import TILES from "./tiles";
+import Dungeon from "./dungeon";
 
-const attributesToHtmlString = attrObj =>
+type AttributesObject = {
+  [key: string]: string;
+};
+
+const attributesToHtmlString = (attrObj: AttributesObject) =>
   Object.entries(attrObj)
     .map(([key, val]) => `${key}="${val}"`)
     .join(" ");
 
 // Debug by dumping a table to the console where each element in the map is the number of rooms in
 // that location
-export function debugRoomGrid(dungeon) {
+export function debugRoomGrid(dungeon: Dungeon) {
   const table = dungeon.roomGrid.map(row => row.map(elem => `${elem.length}`.padStart(2)));
   console.log(table.map(row => row.join(" ")).join("\n"));
 }
@@ -25,8 +30,21 @@ export function debugRoomGrid(dungeon) {
 //      </tbody>
 //    </table>
 //  </pre>
-export function debugHtmlMap(dungeon, config = {}) {
-  config = Object.assign(
+
+type DebugHtmlConfig = {
+  empty?: string;
+  emptyAttributes?: AttributesObject;
+  wall?: string;
+  wallAttributes?: AttributesObject;
+  floor?: string;
+  floorAttributes?: AttributesObject;
+  door?: string;
+  doorAttributes?: AttributesObject;
+  containerAttributes?: AttributesObject;
+};
+type DebugHtmlConfigRequired = Required<DebugHtmlConfig>;
+export function debugHtmlMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
+  const c: DebugHtmlConfigRequired = Object.assign(
     {},
     {
       empty: " ",
@@ -42,7 +60,6 @@ export function debugHtmlMap(dungeon, config = {}) {
     config
   );
 
-  let c = config;
   const tiles = dungeon.getMappedTiles({
     empty: `<td ${attributesToHtmlString(c.emptyAttributes)}>${c.empty}</td>`,
     floor: `<td ${attributesToHtmlString(c.floorAttributes)}>${c.floor}</td>`,
@@ -61,7 +78,18 @@ export function debugHtmlMap(dungeon, config = {}) {
 
 // Debug by returning a colored(!) table string where each tile in the map is represented with an
 // ASCII string
-export function debugMap(dungeon, config = {}) {
+type DebugConsoleConfig = {
+  empty?: string;
+  emptyColor?: string;
+  wall?: string;
+  wallColor?: string;
+  floor?: string;
+  floorColor?: string;
+  door?: string;
+  doorColor?: string;
+  fontSize?: string;
+};
+export function debugMap(dungeon: Dungeon, config: DebugConsoleConfig = {}) {
   config = Object.assign(
     {},
     {

@@ -1,63 +1,127 @@
-import Random from "./random.js";
-import Room from "./room.js";
-import TILES from "./tiles.js";
-import { debugMap, debugHtmlMap } from "./debug.js";
+import Random from "./random";
+import Room from "./room";
+import TILES, { DebugTileMap } from "./tiles";
+import { debugMap, debugHtmlMap } from "./debug";
+import { create2DArray } from "./create-2d-array";
+import Point from "./point";
 
-const defaultConfig = {
-  width: 50,
-  height: 50,
-  randomSeed: undefined,
-  doorPadding: 1, // Experimental, minimum number of tiles between a door and a room corner (>= 1)
-  rooms: {
-    width: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-    height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-    maxArea: 150,
-    maxRooms: 50
-  }
+type DimensionConfig = { min: number; max: number; onlyOdd?: boolean; onlyEven?: boolean };
+type DimensionConfigOptional = Partial<DimensionConfig>;
+type RoomConfig = {
+  width: DimensionConfig;
+  height: DimensionConfig;
+  maxArea: number;
+  maxRooms: number;
+};
+type RoomConfigOptional = {
+  width?: DimensionConfigOptional;
+  height?: DimensionConfigOptional;
+  maxArea?: number;
+  maxRooms?: number;
+};
+type DungeonConfig = {
+  width: number;
+  height: number;
+  randomSeed: string | undefined;
+  doorPadding: number;
+  rooms: RoomConfig;
+};
+type DungeonConfigOptional = {
+  width?: number;
+  height?: number;
+  randomSeed?: string | undefined;
+  doorPadding?: number;
+  rooms?: RoomConfigOptional;
 };
 
 export default class Dungeon {
-  constructor(config = {}) {
-    const rooms = config.rooms || {};
-    rooms.width = Object.assign({}, defaultConfig.rooms.width, rooms.width);
-    rooms.height = Object.assign({}, defaultConfig.rooms.height, rooms.height);
-    rooms.maxArea = rooms.maxArea || defaultConfig.rooms.maxArea;
-    rooms.maxRooms = rooms.maxRooms || defaultConfig.rooms.maxRooms;
+  public height: number;
+  public width: number;
+  public tiles: TILES[][];
+  public roomConfig: RoomConfig;
+  public rooms: Room[] = [];
+  private doorPadding: number;
+  private r: Random;
+  // 2D grid matching map dimensions where every element contains an array of all the rooms in
+  // that location.
+  public roomGrid: Room[][][] = [];
 
-    // Validate room size
-    if (rooms.width.min < 3) rooms.width.min = 3;
-    if (rooms.height.min < 3) rooms.height.min = 3;
-    if (rooms.width.max < rooms.width.min) rooms.width.max = rooms.width.min;
-    if (rooms.height.max < rooms.height.min) rooms.height.max = rooms.height.min;
+  constructor(config?: DungeonConfigOptional) {
+    const rooms = config?.rooms;
+    const roomWidth = rooms?.width;
+    const roomHeight = rooms?.height;
+    this.roomConfig = {
+      width: {
+        min: roomWidth?.min ?? 5,
+        max: roomWidth?.max ?? 15,
+        onlyOdd: roomWidth?.onlyOdd ?? false,
+        onlyEven: roomWidth?.onlyEven ?? false
+      },
+      height: {
+        min: roomHeight?.min ?? 5,
+        max: roomHeight?.max ?? 15,
+        onlyOdd: roomHeight?.onlyOdd ?? false,
+        onlyEven: roomHeight?.onlyEven ?? false
+      },
+      maxArea: rooms?.maxArea ?? 150,
+      maxRooms: rooms?.maxRooms ?? 50
+    };
 
-    // Avoid an impossibly small maxArea
-    const minArea = rooms.width.min * rooms.height.min;
-    if (rooms.maxArea < minArea) rooms.maxArea = minArea;
+    // Validate the room width and height settings.
+    if (this.roomConfig.width.min < 3 || this.roomConfig.height.min < 3) {
+      throw new Error("Room width and height must be >= 3.");
+    }
+    if (
+      this.roomConfig.width.min > this.roomConfig.width.max ||
+      this.roomConfig.height.min > this.roomConfig.height.max
+    ) {
+      throw new Error("Room width and height max must be >= min.");
+    }
 
-    this.doorPadding = config.doorPadding || defaultConfig.doorPadding;
-    this.width = config.width || defaultConfig.width;
-    this.height = config.height || defaultConfig.height;
-    this.roomConfig = rooms;
+    // Validate the max area based on min dimensions.
+    const minArea = this.roomConfig.width.min * this.roomConfig.height.min;
+    if (this.roomConfig.maxArea < minArea) {
+      throw new Error("The minimum dimensions specified exceeds the given maxArea.");
+    }
+
+    this.doorPadding = config?.doorPadding ?? 1;
+    this.width = config?.width ?? 50;
+    this.height = config?.height ?? 50;
     this.rooms = [];
-    this.r = new Random(config.randomSeed);
-
-    // 2D grid matching map dimensions where every element contains an array of all the rooms in
-    // that location
-    this.roomGrid = [];
+    this.r = new Random(config?.randomSeed);
 
     this.generate();
     this.tiles = this.getTiles();
   }
 
-  drawToConsole(config) {
+  public drawToConsole(config: any) {
     debugMap(this, config);
   }
 
-  drawToHtml(config) {
+  public drawToHtml(config: any) {
     return debugHtmlMap(this, config);
   }
 
-  generate() {
+  getMappedTiles(tileMapping: DebugTileMap = {}) {
+    tileMapping = Object.assign({}, { empty: 0, wall: 1, floor: 2, door: 3 }, tileMapping);
+    return this.tiles.map(row =>
+      row.map(tile => {
+        if (tile === TILES.EMPTY) return tileMapping.empty;
+        else if (tile === TILES.WALL) return tileMapping.wall;
+        else if (tile === TILES.FLOOR) return tileMapping.floor;
+        else if (tile === TILES.DOOR) return tileMapping.door;
+      })
+    );
+  }
+
+  public getCenter(): Point {
+    return {
+      x: Math.floor(this.width / 2),
+      y: Math.floor(this.height / 2)
+    };
+  }
+
+  public generate() {
     this.rooms = [];
     this.roomGrid = [];
 
@@ -68,16 +132,17 @@ export default class Dungeon {
       }
     }
 
-    // Seed the map with a starting randomly sized room in the center of the map
+    // Seed the map with a starting randomly sized room in the center of the map.
+    const mapCenter = this.getCenter();
     const room = this.createRandomRoom();
     room.setPosition(
-      Math.floor(this.width / 2) - Math.floor(room.width / 2),
-      Math.floor(this.height / 2) - Math.floor(room.height / 2)
+      mapCenter.x - Math.floor(room.width / 2),
+      mapCenter.y - Math.floor(room.height / 2)
     );
     this.addRoom(room);
 
     // Continue generating rooms until we hit our cap or have hit our maximum iterations (generally
-    // due to not being able to fit any more rooms in the map)
+    // due to not being able to fit any more rooms in the map).
     let i = this.roomConfig.maxRooms * 5;
     while (this.rooms.length < this.roomConfig.maxRooms && i > 0) {
       this.generateRoom();
@@ -102,45 +167,41 @@ export default class Dungeon {
     // }
   }
 
-  getRoomAt(x, y) {
-    if (x < 0 || y < 0 || x >= this.width || y >= this.height) return null;
-    else return this.roomGrid[y][x][0]; // Assumes 1 room per tile, which is valid for now
+  public hasRoomAt(x: number, y: number) {
+    return x < 0 || y < 0 || x >= this.width || y >= this.height || this.roomGrid[y][x].length > 0;
   }
 
-  getMappedTiles(tileMapping = {}) {
-    tileMapping = Object.assign({}, { empty: 0, wall: 1, floor: 2, door: 3 }, tileMapping);
-    return this.tiles.map(row =>
-      row.map(tile => {
-        if (tile === TILES.EMPTY) return tileMapping.empty;
-        else if (tile === TILES.WALL) return tileMapping.wall;
-        else if (tile === TILES.FLOOR) return tileMapping.floor;
-        else if (tile === TILES.DOOR) return tileMapping.door;
-      })
-    );
+  public getRoomAt(x: number, y: number): Room | null {
+    if (this.hasRoomAt(x, y)) {
+      // Assumes 1 room per tile, which is valid for now
+      return this.roomGrid[y][x][0];
+    } else {
+      return null;
+    }
   }
 
-  addRoom(room) {
-    // if the room won't fit, we don't add it
+  /**
+   * Attempt to add a room and return true/false based on whether it was successful.
+   * @param room
+   */
+  private addRoom(room: Room): Boolean {
     if (!this.canFitRoom(room)) return false;
-
     this.rooms.push(room);
-
-    // Update all tiles in the roomGrid to indicate that this room is sitting on them
+    // Update all tiles in the roomGrid to indicate that this room is sitting on them.
     for (let y = room.top; y <= room.bottom; y++) {
       for (let x = room.left; x <= room.right; x++) {
         this.roomGrid[y][x].push(room);
       }
     }
-
     return true;
   }
 
-  canFitRoom(room) {
-    // Make sure the room fits inside the dungeon
+  private canFitRoom(room: Room) {
+    // Make sure the room fits inside the dungeon.
     if (room.x < 0 || room.x + room.width > this.width - 1) return false;
     if (room.y < 0 || room.y + room.height > this.height - 1) return false;
 
-    // Make sure this room doesn't intersect any existing rooms
+    // Make sure this room doesn't intersect any existing rooms.
     for (let i = 0; i < this.rooms.length; i++) {
       if (room.overlaps(this.rooms[i])) return false;
     }
@@ -148,12 +209,12 @@ export default class Dungeon {
     return true;
   }
 
-  createRandomRoom() {
+  private createRandomRoom(): Room {
     let width = 0;
     let height = 0;
     let area = 0;
 
-    // Find width and height using min/max sizes while keeping under the maximum area
+    // Find width and height using min/max sizes while keeping under the maximum area.
     const config = this.roomConfig;
     do {
       width = this.r.randomInteger(config.width.min, config.width.max, {
@@ -193,39 +254,26 @@ export default class Dungeon {
   }
 
   getTiles() {
-    // Create the full map for the whole dungeon
-    const tiles = Array(this.height);
-    for (let y = 0; y < this.height; y++) {
-      tiles[y] = Array(this.width);
-      for (let x = 0; x < this.width; x++) {
-        tiles[y][x] = TILES.EMPTY;
-      }
-    }
-
-    // Fill in the map with details from each room
-    for (let i = 0; i < this.rooms.length; i++) {
-      const r = this.rooms[i];
-      for (let y = 0; y < r.height; y++) {
-        for (let x = 0; x < r.width; x++) {
-          tiles[y + r.y][x + r.x] = r.tiles[y][x];
-        }
-      }
-    }
-
+    const tiles = create2DArray<TILES>(this.width, this.height, TILES.EMPTY);
+    this.rooms.forEach(room => {
+      room.forEachTile((point, tile) => {
+        tiles[room.y + point.y][room.x + point.x] = tile;
+      });
+    });
     return tiles;
   }
 
-  getPotentiallyTouchingRooms(room) {
-    const touchingRooms = [];
+  getPotentiallyTouchingRooms(room: Room) {
+    const touchingRooms: Room[] = [];
 
     // function that checks the list of rooms at a point in our grid for any potential touching
     // rooms
-    const checkRoomList = function(x, y, rg) {
-      const r = rg[y][x];
+    const checkRoomList = (x: number, y: number) => {
+      const r = this.roomGrid[y][x];
       for (let i = 0; i < r.length; i++) {
         // make sure this room isn't the one we're searching around and that it isn't already in the
         // list
-        if (r[i] != room && touchingRooms.indexOf(r[i]) < 0) {
+        if (r[i] != room && touchingRooms.indexOf(r[i]) === -1) {
           // make sure this isn't a corner of the room (doors can't go into corners)
           const lx = x - r[i].x;
           const ly = y - r[i].y;
@@ -238,20 +286,20 @@ export default class Dungeon {
 
     // iterate the north and south walls, looking for other rooms in those tile locations
     for (let x = room.x + 1; x < room.x + room.width - 1; x++) {
-      checkRoomList(x, room.y, this.roomGrid);
-      checkRoomList(x, room.y + room.height - 1, this.roomGrid);
+      checkRoomList(x, room.y);
+      checkRoomList(x, room.y + room.height - 1);
     }
 
     // iterate the west and east walls, looking for other rooms in those tile locations
     for (let y = room.y + 1; y < room.y + room.height - 1; y++) {
-      checkRoomList(room.x, y, this.roomGrid);
-      checkRoomList(room.x + room.width - 1, y, this.roomGrid);
+      checkRoomList(room.x, y);
+      checkRoomList(room.x + room.width - 1, y);
     }
 
     return touchingRooms;
   }
 
-  findNewDoorLocation(room1, room2) {
+  findNewDoorLocation(room1: Room, room2: Room): [Point, Point] {
     const door1 = { x: -1, y: -1 };
     const door2 = { x: -1, y: -1 };
 
@@ -292,12 +340,12 @@ export default class Dungeon {
     return [door1, door2];
   }
 
-  findRoomAttachment(room) {
+  findRoomAttachment(room: Room) {
     const r = this.r.randomPick(this.rooms);
 
     let x = 0;
     let y = 0;
-    let pad = 2 * this.doorPadding; // 2x padding to account for the padding both rooms need
+    const pad = 2 * this.doorPadding; // 2x padding to account for the padding both rooms need
 
     // Randomly position this room on one of the sides of the random room.
     switch (this.r.randomInteger(0, 3)) {
@@ -332,18 +380,11 @@ export default class Dungeon {
     };
   }
 
-  addDoor(doorPos) {
+  addDoor(doorPos: Point) {
     // Get all the rooms at the location of the door
     const rooms = this.roomGrid[doorPos.y][doorPos.x];
-    for (let i = 0; i < rooms.length; i++) {
-      const r = rooms[i];
-
-      // convert the door position from world space to room space
-      const x = doorPos.x - r.x;
-      const y = doorPos.y - r.y;
-
-      // set the tile to be a door
-      r.tiles[y][x] = TILES.DOOR;
-    }
+    rooms.forEach(room => {
+      room.setTileAt(doorPos.x - room.x, doorPos.y - room.y, TILES.DOOR);
+    });
   }
 }
