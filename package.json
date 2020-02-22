@@ -4,8 +4,8 @@
   "description": "A simple 2D dungeon generator",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@babel/polyfill": "^7.8.3",
     "@types/seedrandom": "^2.4.28",
+    "core-js": "^3.6.4",
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
