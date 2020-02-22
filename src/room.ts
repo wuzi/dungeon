@@ -1,6 +1,6 @@
 import TILES from "./tiles";
 import Point from "./point";
-import { create2DArray } from "./create-2d-array";
+import create2DArray from "./create-2d-array";
 
 export default class Room {
   private tiles: TILES[][];

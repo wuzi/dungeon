@@ -2,7 +2,7 @@ import Random from "./random";
 import Room from "./room";
 import TILES, { DebugTileMap } from "./tiles";
 import { debugMap, debugHtmlMap } from "./debug";
-import { create2DArray } from "./create-2d-array";
+import create2DArray from "./create-2d-array";
 import Point from "./point";
 
 type DimensionConfig = { min: number; max: number; onlyOdd?: boolean; onlyEven?: boolean };
