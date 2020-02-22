@@ -1,9 +1,7 @@
 import TILES from "./tiles";
 import Dungeon from "./dungeon";
 
-type AttributesObject = {
-  [key: string]: string;
-};
+type AttributesObject = { [key: string]: string };
 
 const attributesToHtmlString = (attrObj: AttributesObject) =>
   Object.entries(attrObj)
@@ -43,7 +41,8 @@ type DebugHtmlConfig = {
   containerAttributes?: AttributesObject;
 };
 type DebugHtmlConfigRequired = Required<DebugHtmlConfig>;
-export function debugHtmlMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
+
+export function debugHtmlStringMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
   const c: DebugHtmlConfigRequired = Object.assign(
     {},
     {
@@ -71,8 +70,13 @@ export function debugHtmlMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
   const htmlString = `<pre ${attributesToHtmlString(
     c.containerAttributes
   )}><table><tbody>${tilesHtml}</tbody></table></pre>`;
-  const htmlFragment = document.createRange().createContextualFragment(htmlString);
 
+  return htmlString;
+}
+
+export function debugHtmlMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
+  const htmlString = debugHtmlStringMap(dungeon, config);
+  const htmlFragment = document.createRange().createContextualFragment(htmlString);
   return htmlFragment;
 }
 
@@ -89,8 +93,9 @@ type DebugConsoleConfig = {
   doorColor?: string;
   fontSize?: string;
 };
+type DebugConsoleConfigRequired = Required<DebugConsoleConfig>;
 export function debugMap(dungeon: Dungeon, config: DebugConsoleConfig = {}) {
-  config = Object.assign(
+  const c: DebugConsoleConfigRequired = Object.assign(
     {},
     {
       empty: " ",
@@ -113,23 +118,23 @@ export function debugMap(dungeon: Dungeon, config: DebugConsoleConfig = {}) {
   // throws off the table. Kill two birds by displaying a guide on the first two lines.
   string += `Dungeon: the console window should be big enough to see all of the guide on the next line:\n`;
   string += `%c|${"=".repeat(dungeon.width * 2 - 2)}|\n\n`;
-  styles.push(`font-size: ${config.fontSize}`);
+  styles.push(`font-size: ${c.fontSize}`);
 
   for (let y = 0; y < dungeon.height; y += 1) {
     for (let x = 0; x < dungeon.width; x += 1) {
       const tile = dungeon.tiles[y][x];
       if (tile === TILES.EMPTY) {
-        string += `%c${config.empty}`;
-        styles.push(`color: ${config.emptyColor}; font-size: ${config.fontSize}`);
+        string += `%c${c.empty}`;
+        styles.push(`color: ${c.emptyColor}; font-size: ${c.fontSize}`);
       } else if (tile === TILES.WALL) {
-        string += `%c${config.wall}`;
-        styles.push(`color: ${config.wallColor}; font-size: ${config.fontSize}`);
+        string += `%c${c.wall}`;
+        styles.push(`color: ${c.wallColor}; font-size: ${c.fontSize}`);
       } else if (tile === TILES.FLOOR) {
-        string += `%c${config.floor}`;
-        styles.push(`color: ${config.floorColor}; font-size: ${config.fontSize}`);
+        string += `%c${c.floor}`;
+        styles.push(`color: ${c.floorColor}; font-size: ${c.fontSize}`);
       } else if (tile === TILES.DOOR) {
-        string += `%c${config.door}`;
-        styles.push(`color: ${config.doorColor}; font-size: ${config.fontSize}`);
+        string += `%c${c.door}`;
+        styles.push(`color: ${c.doorColor}; font-size: ${c.fontSize}`);
       }
       string += " ";
     }
