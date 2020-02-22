@@ -34,12 +34,7 @@ module.exports = function(env, argv) {
         {
           test: /\.js$/,
           exclude: /node_modules/,
-          use: {
-            loader: "babel-loader",
-            options: {
-              presets: ["env"]
-            }
-          }
+          use: "babel-loader"
         }
       ]
     },
