@@ -85,4 +85,27 @@ describe("A dungeon", () => {
       expect(room.getTileAt(room.width - 1, room.height - 1)).not.toBe(TILES.DOOR);
     }
   });
+
+  test("should only have doors and walls along the edges", () => {
+    const d = new Dungeon({
+      width: 500,
+      height: 500,
+      rooms: {
+        width: { min: 3, max: 11 },
+        height: { min: 3, max: 11 },
+        maxRooms: 1000
+      }
+    });
+    const acceptableEdgeTiles = new RegExp(`${TILES.DOOR}|${TILES.WALL}`);
+    for (const room of d.rooms) {
+      for (let y = 0; y < room.height; y++) {
+        expect(room.getTileAt(0, y).toString()).toMatch(acceptableEdgeTiles);
+        expect(room.getTileAt(room.width - 1, y).toString()).toMatch(acceptableEdgeTiles);
+      }
+      for (let x = 0; x < room.width; x++) {
+        expect(room.getTileAt(x, 0).toString()).toMatch(acceptableEdgeTiles);
+        expect(room.getTileAt(x, room.height - 1).toString()).toMatch(acceptableEdgeTiles);
+      }
+    }
+  });
 });

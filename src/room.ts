@@ -26,7 +26,7 @@ export default class Room {
       this.setTileAt(0, y, TILES.WALL);
       this.setTileAt(width - 1, y, TILES.WALL);
     }
-    for (let x = 0; x < this.height; x++) {
+    for (let x = 0; x < this.width; x++) {
       this.setTileAt(x, 0, TILES.WALL);
       this.setTileAt(x, height - 1, TILES.WALL);
     }
