@@ -5,7 +5,10 @@
     "target": "es6",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "lib": ["dom", "esnext"]
+    "declaration": true,
+    "lib": ["dom", "esnext"],
+    "outDir": "dist/"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/**/*.test.ts"]
 }
