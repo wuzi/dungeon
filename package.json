@@ -2,6 +2,7 @@
   "name": "@mikewesthad/dungeon",
   "version": "1.2.2",
   "description": "A simple 2D dungeon generator",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@types/seedrandom": "^2.4.28",
     "seedrandom": "^3.0.5"
