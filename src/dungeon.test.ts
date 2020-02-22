@@ -108,4 +108,57 @@ describe("A dungeon", () => {
       }
     }
   });
+
+  test("should generate rooms that match the dimensions", () => {
+    const config = {
+      width: 500,
+      height: 500,
+      rooms: {
+        width: { min: 4, max: 7 },
+        height: { min: 3, max: 9 },
+        maxRooms: 1000
+      }
+    };
+    const d = new Dungeon(config);
+    for (const room of d.rooms) {
+      expect(room.width).toBeGreaterThanOrEqual(config.rooms.width.min);
+      expect(room.width).toBeLessThanOrEqual(config.rooms.width.max);
+      expect(room.height).toBeGreaterThanOrEqual(config.rooms.height.min);
+      expect(room.height).toBeLessThanOrEqual(config.rooms.height.max);
+    }
+  });
+
+  test("should generate only odd dimension rooms when requested", () => {
+    const config = {
+      width: 500,
+      height: 500,
+      rooms: {
+        width: { min: 4, max: 7, onlyOdd: true },
+        height: { min: 3, max: 9, onlyOdd: true },
+        maxRooms: 1000
+      }
+    };
+    const d = new Dungeon(config);
+    for (const room of d.rooms) {
+      expect(room.width % 2 == 0).toBe(false);
+      expect(room.height % 2 == 0).toBe(false);
+    }
+  });
+
+  test("should generate only even dimension rooms when requested", () => {
+    const config = {
+      width: 500,
+      height: 500,
+      rooms: {
+        width: { min: 4, max: 7, onlyEven: true },
+        height: { min: 3, max: 9, onlyEven: true },
+        maxRooms: 1000
+      }
+    };
+    const d = new Dungeon(config);
+    for (const room of d.rooms) {
+      expect(room.width % 2 == 0).toBe(true);
+      expect(room.height % 2 == 0).toBe(true);
+    }
+  });
 });
