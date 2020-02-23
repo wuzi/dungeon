@@ -192,10 +192,11 @@ export default class Dungeon {
 
     // Continue generating rooms until we hit our cap or have hit our maximum iterations (generally
     // due to not being able to fit any more rooms in the map).
-    let i = this.roomConfig.maxRooms * 5;
-    while (this.rooms.length < this.roomConfig.maxRooms && i > 0) {
+    let attempts = 0;
+    const maxAttempts = this.maxRooms * 5;
+    while (this.rooms.length < this.maxRooms && attempts < maxAttempts) {
       this.generateRoom();
-      i -= 1;
+      attempts++;
     }
   }
 
