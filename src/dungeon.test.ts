@@ -2,34 +2,43 @@ import Dungeon from "./dungeon";
 import TILES from "./tiles";
 
 describe("Dungeon constructor", () => {
-  test("should use default config, if none specified", () => {
-    const d = new Dungeon();
-    expect(d.roomConfig).toMatchObject({
-      width: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-      height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-      maxArea: 150,
-      maxRooms: 50
-    });
-    expect(d.width).toBe(50);
-    expect(d.height).toBe(50);
-  });
-
-  test("should apply default config values for properties not specified", () => {
-    const d = new Dungeon({
+  test("should apply default config values for optional properties not specified", () => {
+    const config = {
       width: 20,
+      height: 10,
       rooms: {
-        width: { min: 3, onlyOdd: true },
-        maxArea: 200
+        width: { min: 4, max: 9 },
+        height: { min: 3, max: 4 }
+      }
+    };
+    const d = new Dungeon(config);
+    const maxArea = config.rooms.width.max * config.rooms.height.max;
+    const minArea = config.rooms.width.min * config.rooms.height.min;
+    const maxRooms = Math.floor((config.width * config.height) / minArea);
+    expect(d.getConfig()).toMatchObject({
+      width: config.width,
+      height: config.height,
+      doorPadding: 1,
+      randomSeed: undefined,
+      rooms: {
+        width: {
+          min: config.rooms.width.min,
+          max: config.rooms.width.max,
+          onlyOdd: false,
+          onlyEven: false
+        },
+        height: {
+          min: config.rooms.height.min,
+          max: config.rooms.height.max,
+          onlyOdd: false,
+          onlyEven: false
+        },
+        maxArea,
+        maxRooms
       }
     });
-    expect(d.roomConfig).toMatchObject({
-      width: { min: 3, max: 15, onlyOdd: true, onlyEven: false },
-      height: { min: 5, max: 15, onlyOdd: false, onlyEven: false },
-      maxArea: 200,
-      maxRooms: 50
-    });
-    expect(d.width).toBe(20);
-    expect(d.height).toBe(50);
+  });
+
   });
 
   test("should throw error if maxArea too small", () => {
