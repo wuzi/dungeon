@@ -198,8 +198,8 @@ export default class Dungeon {
 
   private canFitRoom(room: Room) {
     // Make sure the room fits inside the dungeon.
-    if (room.x < 0 || room.x + room.width > this.width - 1) return false;
-    if (room.y < 0 || room.y + room.height > this.height - 1) return false;
+    if (room.x < 0 || room.right > this.width - 1) return false;
+    if (room.y < 0 || room.bottom > this.height - 1) return false;
 
     // Make sure this room doesn't intersect any existing rooms.
     for (let i = 0; i < this.rooms.length; i++) {
