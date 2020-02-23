@@ -39,6 +39,18 @@ describe("Dungeon constructor", () => {
     });
   });
 
+  test("should throw error if max room size is bigger than dungeon size", () => {
+    expect(() => {
+      const config = {
+        width: 20,
+        height: 10,
+        rooms: {
+          width: { min: 4, max: 20 },
+          height: { min: 3, max: 20 }
+        }
+      };
+      const d = new Dungeon(config);
+    }).toThrowError(/exceed dungeon/);
   });
 
   test("should throw error if maxArea too small", () => {
