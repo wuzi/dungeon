@@ -96,7 +96,36 @@ describe("Dungeon constructor", () => {
     }).toThrowError(/width and height max must be >= min/);
   });
 
+  test("should not allow room min/max that cannot match even parity", () => {
+    const spy = jest.spyOn(console, "log").mockImplementation(() => {});
+    expect(() => {
+      const config = {
+        width: 20,
+        height: 10,
+        rooms: {
+          width: { min: 3, max: 3, onlyEven: true },
+          height: { min: 3, max: 5 }
+        }
+      };
+      const d = new Dungeon(config);
     }).toThrowError(/width and height max must be >= min/);
+    spy.mockRestore();
+  });
+
+  test("should not allow room min/max that cannot match odd parity", () => {
+    const spy = jest.spyOn(console, "log").mockImplementation(() => {});
+    expect(() => {
+      const config = {
+        width: 20,
+        height: 10,
+        rooms: {
+          width: { min: 4, max: 4, onlyOdd: true },
+          height: { min: 3, max: 5 }
+        }
+      };
+      const d = new Dungeon(config);
+    }).toThrowError(/width and height max must be >= min/);
+    spy.mockRestore();
   });
 });
 
