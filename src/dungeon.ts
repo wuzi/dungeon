@@ -127,6 +127,21 @@ export default class Dungeon {
     }
   }
 
+  public getConfig(): DungeonConfig {
+    return {
+      width: this.width,
+      height: this.height,
+      doorPadding: this.doorPadding,
+      randomSeed: this.randomSeed,
+      rooms: {
+        width: this.roomWidthConfig,
+        height: this.roomHeightConfig,
+        maxArea: this.maxRoomArea,
+        maxRooms: this.maxRooms
+      }
+    };
+  }
+
   public drawToConsole(config: any) {
     debugMap(this, config);
   }
