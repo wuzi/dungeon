@@ -4,6 +4,7 @@ import TILES, { DebugTileMap } from "./tiles";
 import { debugMap, debugHtmlMap } from "./debug";
 import create2DArray from "./create-2d-array";
 import Point from "./point";
+import { isOdd, isEven } from "./math";
 
 type DimensionConfig = { min: number; max: number; onlyOdd?: boolean; onlyEven?: boolean };
 type DimensionConfigRequired = Required<DimensionConfig>;
