@@ -55,35 +55,47 @@ describe("Dungeon constructor", () => {
 
   test("should throw error if maxArea too small", () => {
     expect(() => {
-      const d = new Dungeon({
+      const config = {
+        width: 20,
+        height: 10,
         rooms: {
-          width: { min: 10, max: 20 },
-          height: { min: 10, max: 20 },
-          maxArea: 20
+          width: { min: 3, max: 5 },
+          height: { min: 3, max: 5 },
+          maxArea: 2
         }
-      });
+      };
+      const d = new Dungeon(config);
     }).toThrowError(/exceeds the given maxArea/);
   });
 
   test("should not allow rooms smaller than 3 x 3", () => {
     expect(() => {
-      const d = new Dungeon({
+      const config = {
+        width: 20,
+        height: 10,
         rooms: {
-          width: { min: 0, max: 20 },
-          height: { min: -2, max: 20 }
+          width: { min: 2, max: 3 },
+          height: { min: 0, max: 3 }
         }
-      });
+      };
+      const d = new Dungeon(config);
     }).toThrowError(/width and height must be >= 3/);
   });
 
   test("should not allow room size min less than max", () => {
     expect(() => {
-      const d = new Dungeon({
+      const config = {
+        width: 20,
+        height: 10,
         rooms: {
-          width: { min: 5, max: 4 },
-          height: { min: 3, max: 1 }
+          width: { min: 5, max: 3 },
+          height: { min: 5, max: 3 }
         }
-      });
+      };
+      const d = new Dungeon(config);
+    }).toThrowError(/width and height max must be >= min/);
+  });
+
     }).toThrowError(/width and height max must be >= min/);
   });
 });
@@ -154,7 +166,7 @@ describe("A dungeon", () => {
       width: 500,
       height: 500,
       rooms: {
-        width: { min: 4, max: 7, onlyOdd: true },
+        width: { min: 5, max: 7, onlyOdd: true },
         height: { min: 3, max: 9, onlyOdd: true },
         maxRooms: 1000
       }
@@ -171,8 +183,8 @@ describe("A dungeon", () => {
       width: 500,
       height: 500,
       rooms: {
-        width: { min: 4, max: 7, onlyEven: true },
-        height: { min: 3, max: 9, onlyEven: true },
+        width: { min: 4, max: 6, onlyEven: true },
+        height: { min: 4, max: 8, onlyEven: true },
         maxRooms: 1000
       }
     };
