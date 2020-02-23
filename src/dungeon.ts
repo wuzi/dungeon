@@ -68,6 +68,8 @@ export default class Dungeon {
 
     this.adjustDimensionConfigForParity(this.roomWidthConfig);
     this.adjustDimensionConfigForParity(this.roomHeightConfig);
+    this.checkDimensionConfig(this.roomWidthConfig);
+    this.checkDimensionConfig(this.roomHeightConfig);
 
     // Validate the room width and height settings.
     if (this.roomWidthConfig.max > this.width) {
@@ -109,6 +111,19 @@ export default class Dungeon {
         dimensionConfig.max--;
         console.log("Dungeon: warning, max dimension adjusted to match onlyEven setting.");
       }
+    }
+  }
+
+  private checkDimensionConfig(dimensionConfig: DimensionConfigRequired) {
+    const { max, min, onlyEven, onlyOdd } = dimensionConfig;
+    if (onlyEven && onlyOdd) {
+      throw new Error("Cannot use both onlyEven and onlyOdd in room's width/height config.");
+    }
+    if (max < min) {
+      throw new Error("Room width and height max must be >= min.");
+    }
+    if (min < 3) {
+      throw new Error("Room width and height must be >= 3.");
     }
   }
 
