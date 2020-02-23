@@ -6,89 +6,78 @@ import create2DArray from "./create-2d-array";
 import Point from "./point";
 
 type DimensionConfig = { min: number; max: number; onlyOdd?: boolean; onlyEven?: boolean };
-type DimensionConfigOptional = Partial<DimensionConfig>;
+type DimensionConfigRequired = Required<DimensionConfig>;
 type RoomConfig = {
   width: DimensionConfig;
   height: DimensionConfig;
-  maxArea: number;
-  maxRooms: number;
-};
-type RoomConfigOptional = {
-  width?: DimensionConfigOptional;
-  height?: DimensionConfigOptional;
   maxArea?: number;
   maxRooms?: number;
 };
 type DungeonConfig = {
   width: number;
   height: number;
-  randomSeed: string | undefined;
-  doorPadding: number;
-  rooms: RoomConfig;
-};
-type DungeonConfigOptional = {
-  width?: number;
-  height?: number;
-  randomSeed?: string | undefined;
+  randomSeed?: string;
   doorPadding?: number;
-  rooms?: RoomConfigOptional;
+  rooms: RoomConfig;
 };
 
 export default class Dungeon {
   public height: number;
   public width: number;
   public tiles: TILES[][];
-  public roomConfig: RoomConfig;
   public rooms: Room[] = [];
   private doorPadding: number;
   private r: Random;
   // 2D grid matching map dimensions where every element contains an array of all the rooms in
   // that location.
   public roomGrid: Room[][][] = [];
+  private maxRooms: number;
+  private maxRoomArea: number;
+  private roomWidthConfig: DimensionConfigRequired;
+  private roomHeightConfig: DimensionConfigRequired;
+  private randomSeed?: string;
 
-  constructor(config?: DungeonConfigOptional) {
-    const rooms = config?.rooms;
-    const roomWidth = rooms?.width;
-    const roomHeight = rooms?.height;
-    this.roomConfig = {
-      width: {
-        min: roomWidth?.min ?? 5,
-        max: roomWidth?.max ?? 15,
-        onlyOdd: roomWidth?.onlyOdd ?? false,
-        onlyEven: roomWidth?.onlyEven ?? false
-      },
-      height: {
-        min: roomHeight?.min ?? 5,
-        max: roomHeight?.max ?? 15,
-        onlyOdd: roomHeight?.onlyOdd ?? false,
-        onlyEven: roomHeight?.onlyEven ?? false
-      },
-      maxArea: rooms?.maxArea ?? 150,
-      maxRooms: rooms?.maxRooms ?? 50
+  constructor(config: DungeonConfig) {
+    this.width = config.width;
+    this.height = config.height;
+    this.doorPadding = config.doorPadding ?? 1;
+    this.rooms = [];
+    this.randomSeed = config.randomSeed;
+    this.r = new Random(this.randomSeed);
+
+    const rooms = config.rooms;
+    const roomWidth = rooms.width;
+    const roomHeight = rooms.height;
+    const maxPossibleRoomArea = roomWidth.max * roomHeight.max;
+    const minPossibleRoomArea = roomWidth.min * roomHeight.min;
+    const maxPossibleRooms = Math.floor((this.width * this.height) / minPossibleRoomArea);
+    this.roomWidthConfig = {
+      min: roomWidth.min,
+      max: roomWidth.max,
+      onlyOdd: roomWidth.onlyOdd ?? false,
+      onlyEven: roomWidth.onlyEven ?? false
     };
+    this.roomHeightConfig = {
+      min: roomHeight.min,
+      max: roomHeight.max,
+      onlyOdd: roomHeight.onlyOdd ?? false,
+      onlyEven: roomHeight.onlyEven ?? false
+    };
+    this.maxRooms = rooms.maxRooms ?? maxPossibleRooms;
+    this.maxRoomArea = rooms.maxArea ?? maxPossibleRoomArea;
+
 
     // Validate the room width and height settings.
-    if (this.roomConfig.width.min < 3 || this.roomConfig.height.min < 3) {
-      throw new Error("Room width and height must be >= 3.");
+    if (this.roomWidthConfig.max > this.width) {
+      throw new Error("Room max width cannot exceed dungeon width.");
     }
-    if (
-      this.roomConfig.width.min > this.roomConfig.width.max ||
-      this.roomConfig.height.min > this.roomConfig.height.max
-    ) {
-      throw new Error("Room width and height max must be >= min.");
+    if (this.roomHeightConfig.max > this.height) {
+      throw new Error("Room max height cannot exceed dungeon height.");
     }
-
     // Validate the max area based on min dimensions.
-    const minArea = this.roomConfig.width.min * this.roomConfig.height.min;
-    if (this.roomConfig.maxArea < minArea) {
+    if (this.maxRoomArea < minPossibleRoomArea) {
       throw new Error("The minimum dimensions specified exceeds the given maxArea.");
     }
-
-    this.doorPadding = config?.doorPadding ?? 1;
-    this.width = config?.width ?? 50;
-    this.height = config?.height ?? 50;
-    this.rooms = [];
-    this.r = new Random(config?.randomSeed);
 
     this.generate();
     this.tiles = this.getTiles();
@@ -215,18 +204,18 @@ export default class Dungeon {
     let area = 0;
 
     // Find width and height using min/max sizes while keeping under the maximum area.
-    const config = this.roomConfig;
+    const { roomWidthConfig, roomHeightConfig } = this;
     do {
-      width = this.r.randomInteger(config.width.min, config.width.max, {
-        onlyEven: config.width.onlyEven,
-        onlyOdd: config.width.onlyOdd
+      width = this.r.randomInteger(roomWidthConfig.min, roomWidthConfig.max, {
+        onlyEven: roomWidthConfig.onlyEven,
+        onlyOdd: roomWidthConfig.onlyOdd
       });
-      height = this.r.randomInteger(config.height.min, config.height.max, {
-        onlyEven: config.height.onlyEven,
-        onlyOdd: config.height.onlyOdd
+      height = this.r.randomInteger(roomHeightConfig.min, roomHeightConfig.max, {
+        onlyEven: roomHeightConfig.onlyEven,
+        onlyOdd: roomHeightConfig.onlyOdd
       });
       area = width * height;
-    } while (area > config.maxArea);
+    } while (area > this.maxRoomArea);
 
     return new Room(width, height);
   }
