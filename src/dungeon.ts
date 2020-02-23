@@ -66,6 +66,8 @@ export default class Dungeon {
     this.maxRooms = rooms.maxRooms ?? maxPossibleRooms;
     this.maxRoomArea = rooms.maxArea ?? maxPossibleRoomArea;
 
+    this.adjustDimensionConfigForParity(this.roomWidthConfig);
+    this.adjustDimensionConfigForParity(this.roomHeightConfig);
 
     // Validate the room width and height settings.
     if (this.roomWidthConfig.max > this.width) {
@@ -81,6 +83,33 @@ export default class Dungeon {
 
     this.generate();
     this.tiles = this.getTiles();
+  }
+
+  /**
+   * Adjust the given dimension config for parity settings (onlyOdd, onlyEven) so that min/max are
+   * adjusted to reflect actual possible values.
+   * @param dimensionConfig
+   */
+  private adjustDimensionConfigForParity(dimensionConfig: DimensionConfigRequired) {
+    if (dimensionConfig.onlyOdd) {
+      if (isEven(dimensionConfig.min)) {
+        dimensionConfig.min++;
+        console.log("Dungeon: warning, min dimension adjusted to match onlyOdd setting.");
+      }
+      if (isEven(dimensionConfig.max)) {
+        dimensionConfig.max--;
+        console.log("Dungeon: warning, max dimension adjusted to match onlyOdd setting.");
+      }
+    } else if (dimensionConfig.onlyEven) {
+      if (isOdd(dimensionConfig.min)) {
+        dimensionConfig.min++;
+        console.log("Dungeon: warning, min dimension adjusted to match onlyEven setting.");
+      }
+      if (isOdd(dimensionConfig.max)) {
+        dimensionConfig.max--;
+        console.log("Dungeon: warning, max dimension adjusted to match onlyEven setting.");
+      }
+    }
   }
 
   public drawToConsole(config: any) {
