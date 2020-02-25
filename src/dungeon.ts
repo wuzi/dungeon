@@ -151,7 +151,7 @@ export default class Dungeon {
     return debugHtmlMap(this, config);
   }
 
-  getMappedTiles(tileMapping: DebugTileMap = {}) {
+  public getMappedTiles(tileMapping: DebugTileMap = {}) {
     tileMapping = Object.assign({}, { empty: 0, wall: 1, floor: 2, door: 3 }, tileMapping);
     return this.tiles.map(row =>
       row.map(tile => {
@@ -264,7 +264,7 @@ export default class Dungeon {
     return new Room(width, height);
   }
 
-  generateRoom() {
+  private generateRoom() {
     const room = this.createRandomRoom();
 
     // Only allow 150 tries at placing the room
@@ -286,7 +286,7 @@ export default class Dungeon {
     }
   }
 
-  getTiles() {
+  public getTiles() {
     const tiles = create2DArray<TILES>(this.width, this.height, TILES.EMPTY);
     this.rooms.forEach(room => {
       room.forEachTile((point, tile) => {
@@ -296,7 +296,7 @@ export default class Dungeon {
     return tiles;
   }
 
-  getPotentiallyTouchingRooms(room: Room) {
+  private getPotentiallyTouchingRooms(room: Room) {
     const touchingRooms: Room[] = [];
 
     // function that checks the list of rooms at a point in our grid for any potential touching
@@ -332,7 +332,7 @@ export default class Dungeon {
     return touchingRooms;
   }
 
-  findNewDoorLocation(room1: Room, room2: Room): [Point, Point] {
+  private findNewDoorLocation(room1: Room, room2: Room): [Point, Point] {
     const door1 = { x: -1, y: -1 };
     const door2 = { x: -1, y: -1 };
 
@@ -373,7 +373,7 @@ export default class Dungeon {
     return [door1, door2];
   }
 
-  findRoomAttachment(room: Room) {
+  private findRoomAttachment(room: Room) {
     const r = this.r.randomPick(this.rooms);
 
     let x = 0;
@@ -413,7 +413,7 @@ export default class Dungeon {
     };
   }
 
-  addDoor(doorPos: Point) {
+  private addDoor(doorPos: Point) {
     // Get all the rooms at the location of the door
     const rooms = this.roomGrid[doorPos.y][doorPos.x];
     rooms.forEach(room => {
