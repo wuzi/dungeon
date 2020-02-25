@@ -14,7 +14,7 @@ type RoomConfig = {
   maxArea?: number;
   maxRooms?: number;
 };
-type DungeonConfig = {
+export type DungeonConfig = {
   width: number;
   height: number;
   randomSeed?: string;
