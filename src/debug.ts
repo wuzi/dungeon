@@ -29,7 +29,7 @@ export function debugRoomGrid(dungeon: Dungeon) {
 //    </table>
 //  </pre>
 
-type DebugHtmlConfig = {
+export type DebugHtmlConfig = {
   empty?: string;
   emptyAttributes?: AttributesObject;
   wall?: string;
@@ -82,7 +82,7 @@ export function debugHtmlMap(dungeon: Dungeon, config: DebugHtmlConfig = {}) {
 
 // Debug by returning a colored(!) table string where each tile in the map is represented with an
 // ASCII string
-type DebugConsoleConfig = {
+export type DebugConsoleConfig = {
   empty?: string;
   emptyColor?: string;
   wall?: string;

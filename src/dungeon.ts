@@ -1,7 +1,7 @@
 import Random from "./random";
 import Room from "./room";
 import TILES, { DebugTileMap } from "./tiles";
-import { debugMap, debugHtmlMap } from "./debug";
+import { debugMap, debugHtmlMap, DebugHtmlConfig, DebugConsoleConfig } from "./debug";
 import create2DArray from "./create-2d-array";
 import Point from "./point";
 import { isOdd, isEven } from "./math";
@@ -143,11 +143,11 @@ export default class Dungeon {
     };
   }
 
-  public drawToConsole(config: any) {
+  public drawToConsole(config: DebugConsoleConfig) {
     debugMap(this, config);
   }
 
-  public drawToHtml(config: any) {
+  public drawToHtml(config: DebugHtmlConfig) {
     return debugHtmlMap(this, config);
   }
 
