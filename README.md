@@ -8,7 +8,7 @@
 
 ### As a Script
 
-Grab the [minified js](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.min.js) file & optional source [map](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.min.js.map) (or the [unminified js](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.js) file & optional source [map](https://raw.githubusercontent.com/mikewesthad/dungeon/master/dist/dungeon.js.map)).
+Grab the [minified js](https://github.com/mikewesthad/dungeon/releases/latest/download/dungeon.min.js) file & optional source [map](https://github.com/mikewesthad/dungeon/releases/latest/download/dungeon.min.js.map) (or the [unminified js](https://github.com/mikewesthad/dungeon/releases/latest/download/dungeon.js) file & optional source [map](https://github.com/mikewesthad/dungeon/releases/latest/download/dungeon.js.map)).
 
 ```html
 <script src="dungeon.min.js"></script>
