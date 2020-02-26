@@ -97,12 +97,12 @@ var mappedTiles = dungeon.getMappedTiles({
 });
 ```
 
+## Docs
+
+See the web docs for the API [here](https://mikewesthad.github.com/dungeon/). The most useful page is the [Dungeon class](https://mikewesthad.github.com/dungeon/classes/_dungeon_.dungeon.html)
+
 ## Contributors
 
 - [@mktcode](https://github.com/mktcode) - fix filename case. 
 - [@gobah](https://github.com/gobah) - PR for getting the library working on node.
 - And, of course, [@nickgravelyn](https://github.com/nickgravelyn/dungeon) who wrote the library that this fork is based on.
-
-## To Do
-
-- Actual docs :p
