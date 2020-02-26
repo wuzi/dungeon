@@ -1,0 +1,11 @@
+{
+  "inputFiles": [
+    "./src"
+  ],
+  "mode": "modules",
+  "out": "docs",
+  "excludeNotExported": false,
+  "excludePrivate": true,
+  "theme": "default",
+  "readme": "README.md"
+}
