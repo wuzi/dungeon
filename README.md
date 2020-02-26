@@ -101,6 +101,11 @@ var mappedTiles = dungeon.getMappedTiles({
 
 See the web docs for the API [here](https://mikewesthad.github.com/dungeon/). The most useful page is the [Dungeon class](https://mikewesthad.github.com/dungeon/classes/_dungeon_.dungeon.html)
 
+## Changelog
+
+- 2.0.0
+  - Rewrite in Typescript. API changes requiring more of the DungeonConfig to be specified in the constructor.
+
 ## Contributors
 
 - [@mktcode](https://github.com/mktcode) - fix filename case. 
