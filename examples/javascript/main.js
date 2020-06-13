@@ -22,14 +22,14 @@ const dungeon = new Dungeon({
 // Make sure you resize your console (see guide that gets printed out in the console)
 dungeon.drawToConsole({
   empty: " ",
-  emptyAttributes: "rgb(0, 0, 0)",
+  emptyColor: "rgb(0, 0, 0)",
   wall: "#",
-  wallAttributes: "rgb(255, 0, 0)",
+  wallColor: "rgb(255, 0, 0)",
   floor: "0",
-  floorAttributes: "rgb(210, 210, 210)",
+  floorColor: "rgb(210, 210, 210)",
   door: "x",
-  doorAttributes: "rgb(0, 0, 255)",
-  containerAttributes: "15px"
+  doorColor: "rgb(0, 0, 255)",
+  fontSize: "8px"
 });
 
 // Helper method for debugging by dumping the map into an HTML fragment (<pre><table>)
