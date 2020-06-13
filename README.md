@@ -34,12 +34,14 @@ import Dungeon from "@mikewesthad/dungeon";
 
 ## Usage
 
+See the examples folder for [a JavaScript example](./examples/javascript/) and [a TypeScript example](./examples/typescript/).
+
 ```js
 const dungeon = new Dungeon({
   width: 50,
   height: 50,
   doorPadding: 1, // Experimental, minimum number of tiles between a door and a room corner (>= 1)
-  randomSeed: 0, // Leave undefined if you don't want to control the seed
+  randomSeed: "hello", // Leave undefined if you don't want to control the seed
   rooms: {
     width: {
       min: 5,
@@ -59,14 +61,14 @@ const dungeon = new Dungeon({
 // Make sure you resize your console (see guide that gets printed out in the console)
 dungeon.drawToConsole({
   empty: " ",
-  emptyAttributes: "rgb(0, 0, 0)",
+  emptyColor: "rgb(0, 0, 0)",
   wall: "#",
-  wallAttributes: "rgb(255, 0, 0)",
+  wallColor: "rgb(255, 0, 0)",
   floor: "0",
-  floorAttributes: "rgb(210, 210, 210)",
+  floorColor: "rgb(210, 210, 210)",
   door: "x",
-  doorAttributes: "rgb(0, 0, 255)",
-  containerAttributes: "15px"
+  doorColor: "rgb(0, 0, 255)",
+  fontSize: "8px"
 });
 
 // Helper method for debugging by dumping the map into an HTML fragment (<pre><table>)
