@@ -4,6 +4,8 @@ import create2DArray from "./create-2d-array";
 
 export default class Room {
   private tiles: TILES[][];
+  private static nextId = 0;
+  public readonly id = 0;
   public x = 0;
   public y = 0;
   public left = 0;
@@ -30,6 +32,9 @@ export default class Room {
       this.setTileAt(x, 0, TILES.WALL);
       this.setTileAt(x, height - 1, TILES.WALL);
     }
+
+    this.id = Room.nextId;
+    Room.nextId++;
   }
 
   public forEachTile(fn: (p: Point, t: TILES) => void) {
