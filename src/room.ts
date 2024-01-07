@@ -5,7 +5,7 @@ import create2DArray from "./create-2d-array";
 export default class Room {
   private tiles: TILES[][];
   private static nextId = 0;
-  public readonly id = 0;
+  public readonly id: number = 0;
   public x = 0;
   public y = 0;
   public left = 0;
